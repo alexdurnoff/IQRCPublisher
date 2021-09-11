@@ -1,0 +1,6 @@
+ssh_address=192.168.1.190
+ssh_user=alexej
+ssh_password=1103206bygh
+interval=15
+topic=TOPIC
+broker_address=tcp://iot.eclipse.org:1883

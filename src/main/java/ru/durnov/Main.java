@@ -3,7 +3,6 @@ package ru.durnov;
 import org.eclipse.paho.client.mqttv3.*;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -15,11 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException, MqttException, InterruptedException {
         Properties properties = new Properties();
         properties.load(Files.newBufferedReader(Paths.get("config.txt")));
-        Log log = new CurrentDayLog(
-                properties.getProperty("ssh_address"),
-                properties.getProperty("ssh_user"),
-                properties.getProperty("ssh_password")
-        );
+        Log log = new CurrentDayLog();
         String publisherId = UUID.randomUUID().toString();
         Time time = new CurrentTime();
         int interval;
