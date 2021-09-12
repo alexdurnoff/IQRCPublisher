@@ -14,15 +14,6 @@ public class NumberConverter {
         fill10To2Map();
     }
 
-   /* public NumberConverter(){
-        this.map16To2 = new HashMap<>();
-        this.map16To10 = new HashMap<>();
-        this.map10To2 = new HashMap<>();
-        fill16To2Map();
-        fill16To10Map();
-        fill10To2Map();
-    }*/
-
     private static void fill10To2Map() {
         map10To2.put("0", "0000");
         map10To2.put("1", "01"); map10To2.put("2", "10");

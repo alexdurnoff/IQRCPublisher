@@ -33,11 +33,4 @@ public class Publisher extends MqttClient {
         msg.setRetained(true);
         this.publish(topic, msg);
     }
-
-    public void sendTimeMessage(LocalDateTime timeFromString) throws MqttException {
-        MqttMessage msg = new MqttMessage(("DateTime = " + timeFromString.toString().replace("T", "")).getBytes(StandardCharsets.UTF_8));
-        msg.setQos(0);
-        msg.setRetained(true);
-        this.publish(topic, msg);
-    }
 }
