@@ -8,11 +8,12 @@ import java.util.List;
 
 public class CurrentDayLog implements Log {
     private final String pathToFile = "/home/pi/iqrclog/currentday.log.gz";
+    private final String resultFilePath = "/home/pi/iqrclog/currentday.log";
 
     @Override
     public List<String> stringList() throws IOException {
-        GUnzipper.unzipFile("/tmp/" + "currentday_log");
-        Path path = Paths.get("/tmp/currentday_log");
+        GUnzipper.unzipFile(pathToFile);
+        Path path = Paths.get(resultFilePath);
         List<String> stringList = Files.readAllLines(path);
         Files.delete(path);
         return stringList;

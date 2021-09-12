@@ -1,0 +1,3 @@
+interval=15
+topic=MQTT Examples
+broker_address=tcp://mqtt.eclipseprojects.io:1883

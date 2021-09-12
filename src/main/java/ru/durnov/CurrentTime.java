@@ -12,6 +12,11 @@ public class CurrentTime implements Time {
     private LocalDateTime lastReportTime;
     private final static Pattern pattern = Pattern.compile("\"DateTime=([12][09][0-9][0-9])/([0-1][0-9])/([0-3][0-9])(.)+$\"");
     private boolean mustSend;
+    private final Publisher publisher;
+
+    public CurrentTime(Publisher publisher) {
+        this.publisher = publisher;
+    }
 
 
     @Override
@@ -20,7 +25,9 @@ public class CurrentTime implements Time {
         if (matcher.matches()){
             try {
                 LocalDateTime timeFromString = LocalDateTime.parse(timeString);
-                if (lastReportTime.compareTo(timeFromString) > 0){
+                logger.info("parsing time success: " + timeFromString );
+                if (lastReportTime == null || lastReportTime.compareTo(timeFromString) > 0){
+                    publisher.sendTimeMessage(timeFromString);
                     lastReportTime = timeFromString;
                     mustSend = true;
                 }

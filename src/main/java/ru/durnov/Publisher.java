@@ -5,6 +5,8 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,5 +33,12 @@ public class Publisher extends MqttClient {
             this.publish(topic, msg);
         }
 
+    }
+
+    public void sendTimeMessage(LocalDateTime timeFromString) throws MqttException {
+        MqttMessage msg = new MqttMessage(("DateTime = " + timeFromString.toString().replace("T", "")).getBytes(StandardCharsets.UTF_8));
+        msg.setQos(0);
+        msg.setRetained(true);
+        this.publish(topic, msg);
     }
 }
