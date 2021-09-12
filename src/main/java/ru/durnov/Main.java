@@ -60,8 +60,7 @@ public class Main {
                 logger.error("exception from reading current log file " + e);
             }
             time.reset();
-            Thread.sleep(interval);
+            Thread.sleep(interval*1000);
         }
-
     }
 }

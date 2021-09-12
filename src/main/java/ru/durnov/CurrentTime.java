@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class CurrentTime implements Time {
     private final static Logger logger = LogManager.getLogger(CurrentTime.class);
     private LocalDateTime lastReportTime;
-    private final static Pattern pattern = Pattern.compile("\"DateTime=([12][09][0-9][0-9])/([0-1][0-9])/([0-3][0-9])(.)+$\"");
+    private final static Pattern pattern = Pattern.compile("DateTime=([12][09][0-9][0-9])/([0-1][0-9])/([0-3][0-9])(.)+$");
     private boolean mustSend;
     private final Publisher publisher;
 
@@ -24,8 +24,7 @@ public class CurrentTime implements Time {
         Matcher matcher = pattern.matcher(timeString);
         if (matcher.matches()){
             try {
-                LocalDateTime timeFromString = LocalDateTime.parse(timeString);
-                logger.info("parsing time success: " + timeFromString );
+                LocalDateTime timeFromString = new LocalDateTimeFromLog(timeString).value();
                 if (lastReportTime == null || lastReportTime.compareTo(timeFromString) > 0){
                     publisher.sendTimeMessage(timeFromString);
                     lastReportTime = timeFromString;
@@ -42,6 +41,5 @@ public class CurrentTime implements Time {
     public void reset() {
         mustSend = false;
     }
-
 
 }
