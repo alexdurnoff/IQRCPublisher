@@ -13,4 +13,9 @@ public interface Time {
      * reset after reading log file.
      */
     void reset();
+
+    /**
+     * @return true if LocalDateTime field was changed.
+     */
+    boolean isMustSend();
 }

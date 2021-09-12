@@ -15,15 +15,8 @@ class CurrentTimeTest {
 
     @Test
     void checkTimeWriting() throws IOException, MqttException {
-        Properties properties = new Properties();
-        properties.load(Files.newBufferedReader(Paths.get("config.txt")));
-        Publisher publisher = new Publisher(
-                properties.getProperty("broker_address"),
-                UUID.randomUUID().toString(),
-                15,
-                properties.getProperty("topic")
-        );
-        CurrentTime currentTime = new CurrentTime(publisher);
+        StringBuilder stringBuilder = new StringBuilder();
+        CurrentTime currentTime = new CurrentTime(stringBuilder);
         String str1 = "DateTime=2015/07/30 00:06:52   wday=4";
         assertTrue(currentTime.checkTimeWriting(str1));
         currentTime.reset();

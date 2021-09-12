@@ -42,25 +42,31 @@ public class Main {
         } catch (MqttException e) {
             logger.error("exception from construct MQTT-client " + e);
         }
-        Time time = new CurrentTime(publisher);
+        StringBuilder stringBuilder = new StringBuilder();
+        Time time = new CurrentTime(stringBuilder);
         while (true){
             try {
                 List<String> stringList = log.stringList();
                 for (String s : stringList) {
-                    if (time.checkTimeWriting(s)){
-                        try {
-                            assert publisher != null;
-                            publisher.sendMessage(s);
-                        } catch (MqttException e) {
-                            logger.error("exception from sending message " + e);
+                    if (time.checkTimeWriting(s)) {
+                        if (new PublisherMatcher(s).checkString()){
+                            stringBuilder.append(new PayloadPart(s).payload()).append("\n");
                         }
+                    }
+                }
+                if (time.isMustSend()){
+                    try {
+                        assert publisher != null;
+                        publisher.sendMessage(stringBuilder.toString());
+                    } catch (MqttException e) {
+                        logger.error("exception from sending message " + e);
                     }
                 }
             } catch (IOException e) {
                 logger.error("exception from reading current log file " + e);
             }
             time.reset();
-            Thread.sleep(interval*1000);
+            Thread.sleep(interval* 1000L);
         }
     }
 }

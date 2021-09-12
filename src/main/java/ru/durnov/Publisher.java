@@ -27,13 +27,11 @@ public class Publisher extends MqttClient {
     }
 
     public void sendMessage(String stringFromFile) throws MqttException {
-        if (new PublisherMatcher(stringFromFile).checkString()){
-            logger.info("publisher detect string from log for sending message");
-            MqttMessage msg = new MqttMessage(new Payload(stringFromFile).payload());
-            msg.setQos(0);
-            msg.setRetained(true);
-            this.publish(topic, msg);
-        }
+        logger.info("publisher detect string from log for sending message");
+        MqttMessage msg = new MqttMessage(stringFromFile.getBytes(StandardCharsets.UTF_8));
+        msg.setQos(0);
+        msg.setRetained(true);
+        this.publish(topic, msg);
     }
 
     public void sendTimeMessage(LocalDateTime timeFromString) throws MqttException {

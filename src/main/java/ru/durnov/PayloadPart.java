@@ -3,13 +3,11 @@ package ru.durnov;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
-
 /**
  * Encapsulate String from log file and return from single method payload for MQTTMessage as byte array;
  */
-public class Payload {
-    private final static Logger logger = LogManager.getLogger(Payload.class);
+public class PayloadPart {
+    private final static Logger logger = LogManager.getLogger(PayloadPart.class);
     private final double realtemp;
     private final double settemp;
     private final double deltaSetPoint;
@@ -21,8 +19,9 @@ public class Payload {
     private final int error;
     private final int responseTime;
     private final int fmode;
+    private final String macAddress;
 
-    public Payload(String stringFromFile) {
+    public PayloadPart(String stringFromFile) {
         double lqi1;
         this.realtemp = NumberConverter.getCurrentActualTemperature(stringFromFile);
         this.settemp = NumberConverter.getCurrentSetTemperature(stringFromFile);
@@ -41,29 +40,49 @@ public class Payload {
         this.error = NumberConverter.getErrorsByString(stringFromFile);
         this.fmode = NumberConverter.getFModeByString(stringFromFile);
         this.responseTime = NumberConverter.getResponceTimeByString(stringFromFile);
+        this.macAddress = new MacAddress(stringFromFile).address();
     }
 
-    public byte[] payload() {
+    public String payload() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder
+                .append(this.macAddress)
+                .append(" ")
                 .append("realtemp:")
+                .append(" ")
                 .append(realtemp)
+                .append(" ")
                 .append("settemp:")
+                .append(" ")
                 .append(settemp)
+                .append(" ")
                 .append("openstatus:")
+                .append(" ")
                 .append(openStatus)
+                .append(" ")
                 .append("heatSaving:")
+                .append(" ")
                 .append(heatSaving)
+                .append(" ")
                 .append("LQI:")
+                .append(" ")
                 .append(lqi)
+                .append(" ")
                 .append("Battery:")
+                .append(" ")
                 .append(battery)
+                .append(" ")
                 .append("Error:")
+                .append(" ")
                 .append(error)
+                .append(" ")
                 .append("ResponseTime:")
+                .append(" ")
                 .append(responseTime)
+                .append(" ")
                 .append("Fmode")
+                .append(" ")
                 .append(fmode);
-        return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
+        return stringBuilder.toString();
     }
 }
