@@ -12,11 +12,7 @@ public class CurrentTime implements Time {
     private LocalDateTime lastReportTime;
     private final static Pattern pattern = Pattern.compile("DateTime=([12][09][0-9][0-9])/([0-1][0-9])/([0-3][0-9])(.)+$");
     private boolean mustSend;
-    private final StringBuilder stringBuilder;
-
-    public CurrentTime(StringBuilder stringBuilder) {
-        this.stringBuilder = stringBuilder;
-    }
+    private String timeString;
 
 
     @Override
@@ -26,8 +22,8 @@ public class CurrentTime implements Time {
             try {
                 LocalDateTime timeFromString = new LocalDateTimeFromLog(timeString).value();
                 if (lastReportTime == null || lastReportTime.compareTo(timeFromString) < 0){
-                    stringBuilder.append(timeString).append("\n");
                     lastReportTime = timeFromString;
+                    this.timeString = timeString;
                     mustSend = true;
                 }
             } catch (Exception e) {
@@ -39,12 +35,16 @@ public class CurrentTime implements Time {
 
     @Override
     public void reset() {
-        stringBuilder.delete(0, stringBuilder.length());
         mustSend = false;
     }
 
     @Override
     public boolean isMustSend() {
         return mustSend;
+    }
+
+    @Override
+    public String time() {
+        return this.timeString;
     }
 }

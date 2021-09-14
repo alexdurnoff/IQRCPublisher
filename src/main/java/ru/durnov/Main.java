@@ -23,7 +23,6 @@ public class Main {
            System.exit(-1);
         }
         Log log = new CurrentDayLog();
-        String publisherId = UUID.randomUUID().toString();
         int interval;
         try {
             interval = Integer.parseInt(properties.getProperty("interval"));
@@ -33,33 +32,24 @@ public class Main {
         }
         Publisher publisher = null;
         try {
-            publisher = new Publisher(
-                    properties.getProperty("broker_address"),
-                    publisherId,
-                    interval,
-                    properties.getProperty("topic")
-            );
+            publisher = new Publisher(properties, interval);
         } catch (MqttException e) {
             logger.error("exception from construct MQTT-client " + e);
+            System.exit(-1);
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        Time time = new CurrentTime(stringBuilder);
+        Time time = new CurrentTime();
         while (true){
             try {
                 List<String> stringList = log.stringList();
                 for (String s : stringList) {
-                    if (time.checkTimeWriting(s)) {
-                        if (new PublisherMatcher(s).checkString()){
-                            stringBuilder.append(new PayloadPart(s).payload()).append("\n");
+                    if (time.checkTimeWriting(s) && new PublisherMatcher(s).checkString()) {
+                        try {
+                            String message = time.time() + " " + new PayloadPart(s).payload();
+                            publisher.sendMessage(message);
+                            logger.info("sending message \n" + message);
+                        } catch (MqttException e) {
+                            logger.error("exception from sending message " + e);
                         }
-                    }
-                }
-                if (time.isMustSend()){
-                    try {
-                        assert publisher != null;
-                        publisher.sendMessage(stringBuilder.toString());
-                    } catch (MqttException e) {
-                        logger.error("exception from sending message " + e);
                     }
                 }
             } catch (IOException e) {

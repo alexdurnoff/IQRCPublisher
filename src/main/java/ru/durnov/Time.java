@@ -18,4 +18,6 @@ public interface Time {
      * @return true if LocalDateTime field was changed.
      */
     boolean isMustSend();
+
+    String time();
 }

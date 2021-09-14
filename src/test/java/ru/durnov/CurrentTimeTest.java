@@ -16,7 +16,7 @@ class CurrentTimeTest {
     @Test
     void checkTimeWriting() throws IOException, MqttException {
         StringBuilder stringBuilder = new StringBuilder();
-        CurrentTime currentTime = new CurrentTime(stringBuilder);
+        CurrentTime currentTime = new CurrentTime();
         String str1 = "DateTime=2015/07/30 00:06:52   wday=4";
         assertTrue(currentTime.checkTimeWriting(str1));
         currentTime.reset();

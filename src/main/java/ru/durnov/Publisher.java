@@ -9,6 +9,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
+import java.util.Properties;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,8 +28,21 @@ public class Publisher extends MqttClient {
         this.connect(options);
     }
 
+    public Publisher(Properties properties, int interval) throws MqttException {
+        super(properties.getProperty("broker_address"), String.valueOf( UUID.randomUUID()));
+        this.topic = properties.getProperty("topic");
+        MqttConnectOptions options = new MqttConnectOptions();
+        options.setAutomaticReconnect(true);
+        options.setCleanSession(true);
+        if (properties.containsKey("password")){
+            options.setUserName(properties.getProperty("user"));
+            options.setPassword(properties.getProperty("password").toCharArray());
+        }
+        options.setConnectionTimeout(interval/3);
+        this.connect(options);
+    }
+
     public void sendMessage(String stringFromFile) throws MqttException {
-        logger.info("publisher detect string from log for sending message");
         MqttMessage msg = new MqttMessage(stringFromFile.getBytes(StandardCharsets.UTF_8));
         msg.setQos(0);
         msg.setRetained(true);
